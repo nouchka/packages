@@ -21,7 +21,7 @@ pages:
     - mkdir dist/
     - >
       for package in $(cat PACKAGES); do
-        FILE=$(/bin/echo $package | /usr/bin/md5sum | /bin/cut -f1 -d" ")
+        FILE=$(echo $package |md5sum |cut -f1 -d" ")
         wget -O dist/$FILE.deb $package
       done
     - aptly repo add public ./dist/
