@@ -19,8 +19,11 @@ pages:
     - echo "allow-loopback-pinentry" > ~/.gnupg/gpg-agent.conf
   script:
     - mkdir dist/
-    - wget https://packagecloud.io/nouchka/home/packages/ubuntu/xenial/dotfiles_0.1.90_amd64.deb/download.deb
-    - mv download.deb dist/dotfiles.deb
+    - >
+      for package in $(cat PACKAGES); do
+        FILE=$(/bin/echo $package | /usr/bin/md5sum | /bin/cut -f1 -d" ")
+        wget -O dist/$FILE.deb $package
+      done
     - aptly repo add public ./dist/
 ##    - gpg --list-secret-keys --keyid-format=long
     - aptly publish repo -batch -passphrase=${GPG_PASSPHRASE} -gpg-key=${GPG_KEY_ID} public
