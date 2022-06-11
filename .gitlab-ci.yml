@@ -1,32 +1,40 @@
+---
+image: debian:buster
 
-image: busybox:latest
+stages:
+  - pages
 
-before_script:
-  - echo "Before script section"
-  - echo $package
-
-after_script:
-  - echo "After script section"
-  - echo "For example you might do some cleanup here"
-
-build1:
-  stage: build
+pages:
+  stage: pages
+  needs:
+    - package:amd64
+    - package:arm64
+  dependencies:
+    - package:amd64
+    - package:arm64
+  before_script:
+    - apt-get update -qy > /dev/null
+    - apt-get install gpg gnupg2 wget -qy
+    - apt-key adv --keyserver pool.sks-keyservers.net --recv-keys ED75B5A4483DA07C
+    - echo "deb http://repo.aptly.info/ squeeze main" >> /etc/apt/sources.list.d/aptly.list
+    - apt-get update -qy > /dev/null
+    - apt-get install aptly -qy
+    - gpg --import --no-tty --batch --yes ${GPG_PRIVATE_KEY}
+    - aptly repo create -distribution=xenial -component=main public
+    - echo -e "use-agent\npinentry-mode loopback" > ~/.gnupg/gpg.conf
+    - echo "allow-loopback-pinentry" > ~/.gnupg/gpg-agent.conf
   script:
-    - echo "Do your build here"
-
-test1:
-  stage: test
-  script:
-    - echo "Do a test here"
-    - echo "For example run a test suite"
-
-test2:
-  stage: test
-  script:
-    - echo "Do another parallel test here"
-    - echo "For example run a lint test"
-
-deploy1:
-  stage: deploy
-  script:
-    - echo "Do your deploy here"
+    - mkdir dist/
+    - wget https://packagecloud.io/nouchka/home/packages/ubuntu/xenial/dotfiles_0.1.90_amd64.deb/download.deb
+    - mv download.deb dist/dotfiles.deb
+    - aptly repo add public ./dist/
+    - aptly publish repo -batch -passphrase="${GPG_PASSPHRASE}" -gpg-key="${GPG_KEY_ID}" public
+    - mv ~/.aptly/public .
+    - gpg --armor --output public/gpg.key --export ${GPG_KEY_ID}
+  artifacts:
+    paths:
+      - public
+    when: on_success
+    expire_in: 1 year
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
