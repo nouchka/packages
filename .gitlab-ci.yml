@@ -13,7 +13,8 @@ pages:
     - echo "deb http://repo.aptly.info/ squeeze main" >> /etc/apt/sources.list.d/aptly.list
     - apt-get update -qy > /dev/null
     - apt-get install aptly -qy
-    - gpg --import --no-tty --batch --yes ${GPG_PRIVATE_KEY}
+    - echo $GPG_PRIVATE_KEY| base64 -d > ${HOME}/gpg.key
+    - gpg --import --no-tty --batch --yes ${HOME}/gpg.key
     - aptly repo create -distribution=xenial -component=main public
     - echo -e "use-agent\npinentry-mode loopback" > ~/.gnupg/gpg.conf
     - echo "allow-loopback-pinentry" > ~/.gnupg/gpg-agent.conf
