@@ -8,7 +8,7 @@ pages:
   stage: pages
   before_script:
     - apt-get update -qy > /dev/null
-    - apt-get install gpg gnupg2 wget -qy
+    - apt-get install gpg gnupg2 wget bzip2 -qy
     - apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A0546A43624A8331
     - echo "deb http://repo.aptly.info/ squeeze main" >> /etc/apt/sources.list.d/aptly.list
     - apt-get update -qy > /dev/null
