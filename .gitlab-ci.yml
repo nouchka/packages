@@ -25,6 +25,7 @@ pages:
         FILE=$(echo $package |md5sum |cut -f1 -d" ")
         wget -O dist/$FILE.deb?version=$CI_PIPELINE_IID $package || true
       done
+    - for i in `find dist/ -type f -name "*\?*"`; do mv $i `echo $i | cut -d? -f1`; done
     - find dist/ -type f -empty -print -delete
     - aptly repo add public ./dist/
 ##    - gpg --list-secret-keys --keyid-format=long
