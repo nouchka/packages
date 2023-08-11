@@ -1,6 +1,8 @@
-https://japromis.gitlab.io/docker-ansible-requirements-updater/latest.deb
 https://japromis.gitlab.io/docker-ansible/latest.deb
+https://japromis.gitlab.io/docker-ansible-requirements-updater/latest.deb
+https://japromis.gitlab.io/docker-difft/latest.deb
 https://japromis.gitlab.io/docker-gitcheck/latest.deb
+https://japromis.gitlab.io/docker-gnome-connection-manager/latest.deb
 https://japromis.gitlab.io/docker-gpsprune/latest.deb
 https://japromis.gitlab.io/docker-heroku/latest.deb
 https://japromis.gitlab.io/docker-hugo/latest.deb
