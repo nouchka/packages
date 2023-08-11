@@ -23,7 +23,7 @@ pages:
     - >
       for package in $(cat PACKAGES); do
         FILE=$(echo $package |md5sum |cut -f1 -d" ")
-        wget -O dist/$FILE.deb $package || true
+        wget -O dist/$FILE.deb?version=$CI_PIPELINE_IID $package || true
       done
     - find dist/ -type f -empty -print -delete
     - aptly repo add public ./dist/
