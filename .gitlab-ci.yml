@@ -25,9 +25,7 @@ pages:
         FILE=$(echo $package |md5sum |cut -f1 -d" ")
         wget -O dist/$FILE.deb $package || true
       done
-    - ls -al dist/
     - find dist/ -type f -empty -print -delete
-    - ls -al dist/
     - aptly repo add public ./dist/
 ##    - gpg --list-secret-keys --keyid-format=long
     - aptly publish repo -origin="japromis.gitlab.io/packages" -batch -passphrase=${GPG_PASSPHRASE} -gpg-key=${GPG_KEY_ID} public
